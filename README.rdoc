@@ -1,6 +1,49 @@
-= google_analytics_feeds
+= Google Analytics Feeds
 
-Description goes here.
+Allows access to google analytics feeds from ruby.
+
+Does not support any of the OAuth-related authentication methods.
+
+== Installation
+
+    gem install google_analytics_feeds
+
+== Usage
+
+    require 'google_analytics_feeds'
+
+    # Define your report. Reports are built up like an ActiveRecord or 
+    # Sequel::Dataset query.
+    report = GoogleAnalyticsFeeds::DataFeed.new.
+      profile(123456).
+      dimensions(:visitor_type).
+      metrics(:visits)
+
+    # Create a session and login. You can optionally pass a
+    # Faraday::Connection to +new+ to use a different adapter, deal 
+    # with proxies etc.
+    session = GoogleAnalyticsFeeds::Session.new
+    session.login("username", "password")
+
+    # Fetch a report. Rows are handled with a 
+    # GoogleAnalyticsFeed::RowHandler - this may just be an anonymous
+    # block as demonstrated here.
+    session.fetch_report(report) do
+      def row(r)
+        puts r.inspect # => outputs the row as a hash.
+      end
+    end
+
+== TODO
+
+* Tests, documentation
+* Filters
+* Access to the management data feed.
+* Auto-follow of paginated result sets.
+
+== Versioning
+
+Patch-level releases will not change the API. Minor releases may make breaking changes to the API until a 1.0 release.
 
 == Contributing to google_analytics_feeds
  
