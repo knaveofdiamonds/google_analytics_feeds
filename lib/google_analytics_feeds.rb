@@ -133,6 +133,67 @@ module GoogleAnalyticsFeeds
     end
   end
 
+  class FilterBuilder
+    include Naming
+
+    def initialize
+      @filters = []
+    end
+
+    def build(&block)
+      instance_eval(&block)
+      @filters.join(';')
+    end
+
+    # TODO: remove duplication
+
+    def eql(name, value)
+      filter(name, value, '==')
+    end
+
+    def not_eql(name, value)
+      filter(name, value, '!=')
+    end
+
+    def contains(n, v)
+      filter(n, v, '=@')
+    end
+
+    def not_contains(n, v)
+      filter(n, v, '!@')
+    end
+
+    def gt(n, v)
+      filter(n, v, '>')
+    end
+
+    def gte(n, v)
+      filter(n, v, '>=')
+    end
+
+    def lt(n, v)
+      filter(n, v, '<')
+    end
+
+    def lte(n, v)
+      filter(n, v, '<=')
+    end
+        
+    def match(n, v)
+      filter(n, v, '=~')
+    end
+
+    def not_match(n, v)
+      filter(n, v, '!~')
+    end
+
+    private
+
+    def filter(name, value, operation)
+      @filters << [symbol_to_name(name), operation, value.to_s].join('')
+    end
+  end
+
   class DataFeed
     include Naming
     
@@ -176,6 +237,13 @@ module GoogleAnalyticsFeeds
     def max_results(i)
       clone_and_set {|params|
         params['max-results'] = i.to_s
+      }
+    end
+
+    def filters(&block)
+      builder = 
+      clone_and_set {|params|
+        params['filters'] = FilterBuilder.new.build(&block)
       }
     end
 

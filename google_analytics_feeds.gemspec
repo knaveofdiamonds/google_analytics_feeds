@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "google_analytics_feeds.gemspec",
     "lib/google_analytics_feeds.rb",
     "lib/sample.rb",
     "spec/google_analytics_feeds_spec.rb",

@@ -44,4 +44,17 @@ describe GoogleAnalyticsFeeds::DataFeed do
 
     headers["Authorization"].should == "GoogleLogin auth=123"
   end
+
+  it "can add filters" do
+    feed = described_class.new.
+      filters {
+      eql :baz, 4
+      contains :foo, "123"
+    }
+
+    uri = Addressable::URI.parse(feed.uri)
+    uri.query_values.should == {
+      "filters" => "ga:baz==4;ga:foo=@123"
+    }
+  end
 end
