@@ -311,7 +311,7 @@ module GoogleAnalyticsFeeds
     def uri
       uri = Addressable::URI.parse(BASE_URI)
       uri.query_values = @params
-      uri.to_s.gsub("%40", "~")
+      uri.to_s.gsub("%40", "@")
     end
 
     alias :to_s :uri
