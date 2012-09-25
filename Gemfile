@@ -10,5 +10,5 @@ group :development do
   gem "rspec", "~> 2"
   gem "yard"
   gem "jeweler", "~> 1.8"
-  gem "rcov", ">= 0", :platforms => :ruby_18
+  gem "rcov", ">= 0", :platforms => :mri_18
 end
