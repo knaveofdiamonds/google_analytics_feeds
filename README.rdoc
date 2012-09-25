@@ -1,5 +1,7 @@
 = Google Analytics Feeds
 
+"!https://secure.travis-ci.org/knaveofdiamonds/google_analytics_feeds.png!":http://travis-ci.org/knaveofdiamonds/google_analytics_feeds
+
 Allows access to Google Analytics feeds from Ruby.
 
 Does not support any of the OAuth-related authentication methods, only
@@ -8,6 +10,9 @@ session login.
 It tries to be really simple, returning rows as Hashes rather than
 specific objects, and provides flexibility as to how you want to make
 HTTP calls via Faraday.
+
+Tested on 1.9, 1.8 & Rubinus; depends on Ox, which has C dependencies
+so not tested on JRuby.
 
 == Installation
 
