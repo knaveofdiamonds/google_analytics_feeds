@@ -1,6 +1,6 @@
 = Google Analytics Feeds
 
-"!https://secure.travis-ci.org/knaveofdiamonds/google_analytics_feeds.png!":http://travis-ci.org/knaveofdiamonds/google_analytics_feeds
+https://secure.travis-ci.org/knaveofdiamonds/google_analytics_feeds.png
 
 Allows access to Google Analytics feeds from Ruby.
 
