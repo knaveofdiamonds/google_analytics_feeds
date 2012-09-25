@@ -1,8 +1,13 @@
 = Google Analytics Feeds
 
-Allows access to google analytics feeds from ruby.
+Allows access to Google Analytics feeds from Ruby.
 
-Does not support any of the OAuth-related authentication methods.
+Does not support any of the OAuth-related authentication methods, only
+session login.
+
+It tries to be really simple, returning rows as Hashes rather than
+specific objects, and provides flexibility as to how you want to make
+HTTP calls via Faraday.
 
 == Installation
 
@@ -26,7 +31,7 @@ Does not support any of the OAuth-related authentication methods.
     session.login("username", "password")
 
     # Fetch a report. Rows are handled with a 
-    # GoogleAnalyticsFeed::RowHandler - this may just be an anonymous
+    # GoogleAnalyticsFeeds::RowHandler - this may just be an anonymous
     # block as demonstrated here.
     session.fetch_report(report) do
       def row(r)
@@ -34,10 +39,22 @@ Does not support any of the OAuth-related authentication methods.
       end
     end
 
+    # Or you can pass a RowHandler class
+    class StdoutRowHandler < GoogleAnalyticsFeeds::RowHandler
+      def row(r)
+        puts r.inspect
+      end
+    end
+
+    # Either takes the class
+    session.fetch_report(report, StdoutRowHandler)
+
+    # Or an instance (if you needed to pass things to the constructor)
+    session.fetch_report(report, StdoutRowHandler.new)
+
 == TODO
 
-* Tests, documentation
-* Filters
+* More tests, documentation.
 * Access to the management data feed.
 * Auto-follow of paginated result sets.
 
