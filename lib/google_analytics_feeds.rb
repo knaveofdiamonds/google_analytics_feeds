@@ -18,12 +18,20 @@ module GoogleAnalyticsFeeds
   # A Google Analytics session, used to retrieve reports.
   # @api public
   class Session
+    # @api private
     CLIENT_LOGIN_URI = "https://www.google.com/accounts/ClientLogin"
 
+    # Creates a new session.
+    #
+    # Optionally pass a Faraday connection, otherwise uses the default
+    # Faraday connection.
     def initialize(connection=Faraday.default_connection)
       @connection = connection
     end
 
+    # Log in to Google Analytics with username and password
+    #
+    # This should be done before attempting to fetch any reports.
     def login(username, password)
       return @token if @token
       response = @connection.post(CLIENT_LOGIN_URI,
@@ -40,6 +48,10 @@ module GoogleAnalyticsFeeds
       end
     end
 
+    # Retrieve a report from Google Analytics.
+    #
+    # Rows are yielded to a RowHandler, provided either as a class,
+    # instance or a block.
     def fetch_report(report, handler=nil, &block)
       handler  = block if handler.nil?
       response = report.retrieve(@token, @connection)
@@ -160,7 +172,9 @@ module GoogleAnalyticsFeeds
     end
   end
 
-  # @api public
+  # Construct filters for a DataFeed.
+  # 
+  # @api private
   class FilterBuilder
     include Naming
 
@@ -232,6 +246,8 @@ module GoogleAnalyticsFeeds
       @params = {}
     end
 
+    # Sets the profile id from which this report should be based.
+    #
     # @return [GoogleAnalyticsFeeds::DataFeed] a cloned DataFeed.
     def profile(id)
       clone_and_set {|params|
@@ -254,6 +270,9 @@ module GoogleAnalyticsFeeds
     end
 
     # Sets the dimensions for a query.
+    #
+    # A query doesn't have to have any dimensions; Google Analytics
+    # limits you to 7 dimensions per-query at time of writing.
     #
     # @param names [*Symbol] the ruby-style names of the dimensions.
     # @return [GoogleAnalyticsFeeds::DataFeed] a cloned DataFeed.
@@ -290,6 +309,21 @@ module GoogleAnalyticsFeeds
       }
     end
 
+    # Filter the result set, based on the results of a block.
+    #
+    # All the block methods follow the form operator(name,
+    # value). Supported operators include: eql, not_eql, lt, lte, gt,
+    # gte, contains, not_contains, match and not_match - hopefully all
+    # self-explainatory.
+    #
+    # Example:
+    #
+    #    query.
+    #      filter {
+    #        eql(:dimension, "value")
+    #        gte(:metric, 3)
+    #      }
+    # 
     # @return [GoogleAnalyticsFeeds::DataFeed]
     def filters(&block)
       builder = 
@@ -308,6 +342,7 @@ module GoogleAnalyticsFeeds
       }
     end
 
+    # Returns the URI string needed to retrieve this report.
     def uri
       uri = Addressable::URI.parse(BASE_URI)
       uri.query_values = @params
