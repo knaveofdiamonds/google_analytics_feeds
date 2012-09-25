@@ -8,7 +8,7 @@ gem "addressable"
 # Include everything needed to run rake, tests, features, etc.
 group :development do
   gem "rspec", "~> 2"
-  gem "rdoc", "~> 3.12"
+  gem "yard"
   gem "jeweler", "~> 1.8"
   gem "rcov", ">= 0"
 end

@@ -3,10 +3,20 @@ require 'addressable/uri'
 require 'stringio'
 require 'faraday'
 
+# @api public
 module GoogleAnalyticsFeeds
+  # Raised if login fails.
+  #
+  # @api public
   class AuthenticationError < StandardError ; end
+  
+  # Raised if there is an HTTP-level problem retrieving reports.
+  #
+  # @api public
   class HttpError < StandardError ; end
 
+  # A Google Analytics session, used to retrieve reports.
+  # @api public
   class Session
     CLIENT_LOGIN_URI = "https://www.google.com/accounts/ClientLogin"
 
@@ -46,17 +56,32 @@ module GoogleAnalyticsFeeds
   #
   # Extend this class and override the methods you care about to
   # handle data feed row data.
+  #
+  # @abstract
+  # @api public
   class RowHandler
+    # Called before any row is parsed.
+    #
+    # By default, does nothing.
     def start_rows
     end
 
+    # Called when each row is parsed.
+    #
+    # By default, does nothing.
+    #
+    # @param row Hash
     def row(row)
     end
 
+    # Called after all rows have been parsed.
+    #
+    # By default, does nothing.
     def end_rows
     end
   end
   
+  # @api private
   module Naming
     # Returns a ruby-friendly symbol from a google analytics name.
     #
@@ -81,6 +106,8 @@ module GoogleAnalyticsFeeds
 
   # Parses rows from the GA feed via SAX. Clients shouldn't have to
   # use this - use a RowHandler instead.
+  #
+  # @api private
   class RowParser < ::Ox::Sax
     include Naming
 
@@ -133,6 +160,7 @@ module GoogleAnalyticsFeeds
     end
   end
 
+  # @api public
   class FilterBuilder
     include Naming
 
@@ -194,6 +222,7 @@ module GoogleAnalyticsFeeds
     end
   end
 
+  # @api public
   class DataFeed
     include Naming
     
@@ -203,24 +232,39 @@ module GoogleAnalyticsFeeds
       @params = {}
     end
 
+    # @return [GoogleAnalyticsFeeds::DataFeed] a cloned DataFeed.
     def profile(id)
       clone_and_set {|params|
         params['ids'] = symbol_to_name(id)
       }
     end
 
+    # Sets the metrics for a query.
+    #
+    # A query must have at least 1 metric for GA to consider it
+    # valid. GA also imposes a maximum (as of writing 10 metrics) per
+    # query.
+    #
+    # @param names [*Symbol] the ruby-style names of the dimensions.
+    # @return [GoogleAnalyticsFeeds::DataFeed] a cloned DataFeed.
     def metrics(*vals)
       clone_and_set {|params|
         params['metrics'] = vals.map {|v| symbol_to_name(v) }.join(',')
       }
     end
 
-    def dimensions(*vals)
+    # Sets the dimensions for a query.
+    #
+    # @param names [*Symbol] the ruby-style names of the dimensions.
+    # @return [GoogleAnalyticsFeeds::DataFeed] a cloned DataFeed.
+    def dimensions(*names)
       clone_and_set {|params|
-        params['dimensions'] = vals.map {|v| symbol_to_name(v) }.join(',')
+        params['dimensions'] = names.map {|v| symbol_to_name(v) }.join(',')
       }
     end
 
+    # Sets the start and end date for retrieved results
+    # @return [GoogleAnalyticsFeeds::DataFeed] a cloned DataFeed.
     def dates(start_date, end_date)
       clone_and_set {|params|
         params['start-date'] = start_date.strftime("%Y-%m-%d")
@@ -228,18 +272,25 @@ module GoogleAnalyticsFeeds
       }
     end
 
+    # Sets the start index for retrieved results
+    # @return [GoogleAnalyticsFeeds::DataFeed]
     def start_index(i)
       clone_and_set {|params|
         params['start-index'] = i.to_s
       }
     end
 
+    # Sets the maximum number of results retrieved.
+    #
+    # Google Analytics has its own maximum as well.
+    # @return [GoogleAnalyticsFeeds::DataFeed]
     def max_results(i)
       clone_and_set {|params|
         params['max-results'] = i.to_s
       }
     end
 
+    # @return [GoogleAnalyticsFeeds::DataFeed]
     def filters(&block)
       builder = 
       clone_and_set {|params|
@@ -265,6 +316,7 @@ module GoogleAnalyticsFeeds
 
     alias :to_s :uri
 
+    # @api private
     def retrieve(session_token, connection)
       connection.get(uri) do |request|
         request.headers['Authorization'] = 
@@ -272,6 +324,7 @@ module GoogleAnalyticsFeeds
       end
     end
 
+    # @api private
     def clone
       obj = super
       obj.instance_variable_set(:@params, @params.clone)
@@ -291,6 +344,7 @@ module GoogleAnalyticsFeeds
     end
   end
 
+  # @api private
   class DataFeedParser
     def initialize(handler)
       if handler.kind_of?(Proc)

@@ -4,11 +4,10 @@ Gemfile.lock
 coverage
 coverage.data
 
-# rdoc generated
-rdoc
-
 # bundler
 .bundle
 
 # jeweler generated
 pkg
+
+.yardoc
