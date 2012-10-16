@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{google_analytics_feeds}
-  s.version = "0.1.1"
+  s.version = "0.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Roland Swingler}]
-  s.date = %q{2012-08-31}
+  s.date = %q{2012-10-16}
   s.description = %q{Fairly low-level client library to access Google Analytics Feeds}
   s.email = %q{roland.swingler@gmail.com}
   s.extra_rdoc_files = [
@@ -19,6 +19,8 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     ".rspec",
+    ".travis.yml",
+    ".yardopts",
     "Gemfile",
     "LICENSE.txt",
     "README.rdoc",
@@ -26,9 +28,9 @@ Gem::Specification.new do |s|
     "VERSION",
     "google_analytics_feeds.gemspec",
     "lib/google_analytics_feeds.rb",
-    "lib/sample.rb",
     "spec/google_analytics_feeds_spec.rb",
     "spec/request_spec.rb",
+    "spec/session_spec.rb",
     "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://github.com/knaveofdiamonds/google_analytics_feeds}
@@ -45,7 +47,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<faraday>, [">= 0"])
       s.add_runtime_dependency(%q<addressable>, [">= 0"])
       s.add_development_dependency(%q<rspec>, ["~> 2"])
-      s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
+      s.add_development_dependency(%q<yard>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
     else
@@ -53,7 +55,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<faraday>, [">= 0"])
       s.add_dependency(%q<addressable>, [">= 0"])
       s.add_dependency(%q<rspec>, ["~> 2"])
-      s.add_dependency(%q<rdoc>, ["~> 3.12"])
+      s.add_dependency(%q<yard>, [">= 0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8"])
       s.add_dependency(%q<rcov>, [">= 0"])
     end
@@ -62,7 +64,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<faraday>, [">= 0"])
     s.add_dependency(%q<addressable>, [">= 0"])
     s.add_dependency(%q<rspec>, ["~> 2"])
-    s.add_dependency(%q<rdoc>, ["~> 3.12"])
+    s.add_dependency(%q<yard>, [">= 0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8"])
     s.add_dependency(%q<rcov>, [">= 0"])
   end
