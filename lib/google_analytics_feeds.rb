@@ -326,9 +326,20 @@ module GoogleAnalyticsFeeds
     # 
     # @return [GoogleAnalyticsFeeds::DataFeed]
     def filters(&block)
-      builder = 
       clone_and_set {|params|
         params['filters'] = FilterBuilder.new.build(&block)
+      }
+    end
+
+    # Use a dynamic advanced segment.
+    #
+    # Block methods follow the same style as for filters. Named
+    # advanced segments are not yet supported.
+    # 
+    # @return [GoogleAnalyticsFeeds::DataFeed]
+    def segment(&block)
+      clone_and_set {|params|
+        params['segment'] = "dynamic::" + FilterBuilder.new.build(&block)
       }
     end
 

@@ -57,4 +57,16 @@ describe GoogleAnalyticsFeeds::DataFeed do
       "filters" => "ga:baz==4;ga:foo=@123"
     }
   end
+
+  it "can add a dynamic segment" do
+    feed = described_class.new.
+      segment {
+      eql :medium, "referral"
+    }
+
+    uri = Addressable::URI.parse(feed.uri)
+    uri.query_values.should == {
+      "segment" => "dynamic::ga:medium==referral"
+    }
+  end
 end
