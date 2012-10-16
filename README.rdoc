@@ -57,6 +57,8 @@ so not tested on JRuby.
     # Or an instance (if you needed to pass things to the constructor)
     session.fetch_report(report, StdoutRowHandler.new)
 
+For detailed documentation on how to use the Google Analytics Data Feeds, see Google's documentation: https://developers.google.com/analytics/devguides/reporting/core/v2/gdataReferenceDataFeed
+
 == TODO
 
 * More tests, documentation.
